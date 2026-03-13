@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BroadcastTestTool</string>
+    <string name="start_service">開始</string>
+    <string name="stop_service">停止</string>
+    <string name="add_action">追加</string>
+    <string name="action_hint">Action名を入力 (例: com.example.TEST)</string>
+    <string name="service_running">ブロードキャスト受信中</string>
+    <string name="notification_channel_name">Broadcast Receiver Service</string>
+</resources>
