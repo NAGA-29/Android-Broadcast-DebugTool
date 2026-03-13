@@ -10,8 +10,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/colorStrip"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/action_color_0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
         <TextView
             android:id="@+id/tvTimestamp"
@@ -35,6 +46,8 @@
             android:layout_marginTop="4dp"
             android:textSize="12sp"
             android:fontFamily="monospace" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
