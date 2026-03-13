@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.broadcasttest'
+    namespace 'com.devtools.broadcastdebug'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.broadcasttest"
+        applicationId "com.devtools.broadcastdebug"
         minSdk 26
         targetSdk 34
         versionCode 1

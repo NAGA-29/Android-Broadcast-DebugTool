@@ -1,10 +1,13 @@
-package com.example.broadcasttest
+package com.devtools.broadcastdebug
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +21,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.broadcasttest.databinding.ActivityMainBinding
-import com.example.broadcasttest.databinding.ItemLogBinding
+import com.devtools.broadcastdebug.databinding.ActivityMainBinding
+import com.devtools.broadcastdebug.databinding.ItemLogBinding
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
@@ -39,6 +42,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val manageStorageSettingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            startBroadcastService()
+        } else {
+            Toast.makeText(this, "ストレージ権限が必要です", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         observeState()
         observeLogs()
+        restoreSavedActions()
     }
 
     private fun setupRecyclerView() {
@@ -78,6 +92,12 @@ class MainActivity : AppCompatActivity() {
         binding.btnStop.setOnClickListener {
             stopBroadcastService()
         }
+
+        binding.btnClearSavedActions.setOnClickListener {
+            getPreferences(MODE_PRIVATE).edit().remove("registered_actions").apply()
+            viewModel.clearActions()
+            Toast.makeText(this, "保存済みアクションを削除しました", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun addChipToGroup(action: String) {
@@ -92,16 +112,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionsAndStart() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
-                PackageManager.PERMISSION_GRANTED) {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                startBroadcastService()
+        // Android 11+: MANAGE_EXTERNAL_STORAGE が必要
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                data = Uri.fromParts("package", packageName, null)
             }
-        } else {
-            startBroadcastService()
+            manageStorageSettingsLauncher.launch(intent)
+            return
         }
+        // Android 13+: POST_NOTIFICATIONS が必要
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return
+        }
+        startBroadcastService()
     }
 
     private fun startBroadcastService() {
@@ -129,6 +154,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.registeredActions.collect { actions ->
                         binding.chipGroupActions.removeAllViews()
                         actions.forEach { addChipToGroup(it) }
+                        saveActions(actions)
                     }
                 }
                 launch {
@@ -157,6 +183,18 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until binding.chipGroupActions.childCount) {
             binding.chipGroupActions.getChildAt(i).isEnabled = !isRunning
         }
+    }
+
+    private fun restoreSavedActions() {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val saved = prefs.getStringSet("registered_actions", emptySet()) ?: emptySet()
+        saved.forEach { viewModel.addAction(it) }
+    }
+
+    private fun saveActions(actions: Set<String>) {
+        getPreferences(MODE_PRIVATE).edit()
+            .putStringSet("registered_actions", actions)
+            .apply()
     }
 
     private fun observeLogs() {

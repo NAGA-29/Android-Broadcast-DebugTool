@@ -1,4 +1,4 @@
-package com.example.broadcasttest
+package com.devtools.broadcastdebug
 
 import android.app.*
 import android.content.BroadcastReceiver
@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -70,7 +71,7 @@ class BroadcastService : Service() {
     }
 
     private fun setupLogFile() {
-        val directory = File(getExternalFilesDir(null), "broadcast_logs")
+        val directory = File(Environment.getExternalStorageDirectory(), "BroadcastDebugLogs")
         if (!directory.exists()) {
             directory.mkdirs()
         }

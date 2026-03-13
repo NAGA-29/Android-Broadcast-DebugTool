@@ -1,4 +1,4 @@
-package com.example.broadcasttest
+package com.devtools.broadcastdebug
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

@@ -1,4 +1,4 @@
-package com.example.broadcasttest
+package com.devtools.broadcastdebug
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +25,10 @@ class MainViewModel : ViewModel() {
 
     fun removeAction(action: String) {
         _registeredActions.value = _registeredActions.value - action
+    }
+
+    fun clearActions() {
+        _registeredActions.value = emptySet()
     }
 
     fun setServiceRunning(running: Boolean) {

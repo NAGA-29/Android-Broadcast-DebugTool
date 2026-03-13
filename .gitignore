@@ -8,3 +8,10 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+
+debug/
+release/
+
+.vscode/
+.claude/
+.kiro/
