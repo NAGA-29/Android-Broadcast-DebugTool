@@ -155,6 +155,7 @@ class MainActivity : AppCompatActivity() {
                         binding.chipGroupActions.removeAllViews()
                         actions.forEach { addChipToGroup(it) }
                         saveActions(actions)
+                        logAdapter.updateColorMap(viewModel.actionColors.value)
                     }
                 }
                 launch {
@@ -209,9 +210,15 @@ class MainActivity : AppCompatActivity() {
 
     inner class LogAdapter : RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
         private var logs = listOf<BroadcastService.BroadcastLog>()
+        private var colorMap = mapOf<String, Int>()
 
         fun setLogs(newLogs: List<BroadcastService.BroadcastLog>) {
             logs = newLogs
+            notifyDataSetChanged()
+        }
+
+        fun updateColorMap(map: Map<String, Int>) {
+            colorMap = map
             notifyDataSetChanged()
         }
 
@@ -231,6 +238,8 @@ class MainActivity : AppCompatActivity() {
                 binding.tvTimestamp.text = log.timestamp
                 binding.tvAction.text = log.action
                 binding.tvExtras.text = log.extras
+                val color = colorMap[log.action] ?: MainViewModel.COLOR_PALETTE[0]
+                binding.colorStrip.setBackgroundColor(color)
             }
         }
     }
