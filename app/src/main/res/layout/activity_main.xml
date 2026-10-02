@@ -7,6 +7,13 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/contentDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/actionInputLayout"
         android:layout_width="0dp"
@@ -29,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_action"
         app:layout_constraintBottom_toBottomOf="@+id/actionInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/contentDivider"
         app:layout_constraintTop_toTopOf="@+id/actionInputLayout" />
 
     <TextView
@@ -44,9 +51,11 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupActions"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/contentDivider"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisteredActions" />
 
     <Button
@@ -61,10 +70,12 @@
 
     <LinearLayout
         android:id="@+id/buttonContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/contentDivider"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnClearSavedActions">
 
         <Button
@@ -86,21 +97,24 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvLogHeader"
+        android:id="@+id/tvEvidenceHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="受信履歴:"
+        android:layout_marginStart="16dp"
+        android:text="@string/evidence_header"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
+        app:layout_constraintStart_toStartOf="@+id/contentDivider"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLogs"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLogHeader" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/contentDivider"
+        app:layout_constraintTop_toBottomOf="@+id/tvEvidenceHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

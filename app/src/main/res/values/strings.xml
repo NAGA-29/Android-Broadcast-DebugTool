@@ -7,4 +7,5 @@
     <string name="service_running">ブロードキャスト受信中</string>
     <string name="notification_channel_name">Broadcast Receiver Service</string>
     <string name="clear_saved_actions">保存済みアクションを削除</string>
+    <string name="evidence_header">Evidence</string>
 </resources>
